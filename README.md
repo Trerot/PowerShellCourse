@@ -3,7 +3,8 @@
 This readme contains the content for the entire course.
 
 whats missing?
-- [ ] API stuff
+- [ ] function stuff (near bottom)
+- [ ] API stuff (near bottom)
 - [ ] loop stuff(near bottom)
 
 ## Prerequisits
