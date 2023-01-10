@@ -1,7 +1,6 @@
 # PowerShell-Course
-PowerShell Course. 
 
-This readme contains the content for the entire course. 
+This readme contains the content for the entire course.
 
 whats missing?
 - [ ] API stuff
@@ -10,9 +9,10 @@ whats missing?
 ## Prerequisits
 
 The following tools must be installed before the course starts.
- - Visual Studio Code - https://code.visualstudio.com/
- - GitHub Desktop - https://desktop.github.com/ (unless you allready know git.)
- - Powershell 7 - https://github.com/PowerShell/PowerShell
+
+- Visual Studio Code - https://code.visualstudio.com/
+- GitHub Desktop - https://desktop.github.com/ (unless you allready know git.)
+- Powershell 7 - https://github.com/PowerShell/PowerShell
 
 The following should be done before the course starts.
 
@@ -20,12 +20,14 @@ The following should be done before the course starts.
 - setup my predictive intellisense powershell config
 
 ### My Predictive intellisense powerhell config
+
 Predictive intellisense does this
 ![predictive intellisense sample](/assets/images/2022-07-04-10-43-20.png)
 
 uses your previously typed in commands to predict what you want to type in next. Big help in learning.
 
 here is the config
+
 ```powershell
 # these are my predictive intellisense settings. 
 # grabbed the essentials from the link below.
@@ -37,8 +39,8 @@ Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 Set-PSReadLineKeyHandler -Chord "Ctrl+f" -Function ForwardWord
 Set-PSReadLineKeyHandler -Chord Shift+Tab -Function MenuComplete
 Set-PSReadLineKeyHandler -Chord Ctrl+b -Function BackwardWord
-
 ```
+
 after installing VSCode, Powershell 7+ and Githubdesktop. 
 
 open powershell 7(not windows powershell),
@@ -49,6 +51,7 @@ the powershell profile loads every time you open powershell so this is a nice pl
 #### `code $profile` not launching visual studio code?
 
 this can happen if your system image is lacking shell components. the following solution pasted into a powershell window run as admin should solve it
+
 ```powershell
 Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate -name DisableDualScan -value 0
 Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate -name DisableWindowsUpdateAccess -value 0
@@ -59,10 +62,10 @@ Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate -name S
 Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU -name UseWUServer -value 0
 Restart-Service wuauserv
 DISM /Online /Add-Capability /CapabilityName:Windows.Client.ShellComponents~~~~0.0.1.0
-
 ```
 
 ## Tools
+
 ### Visual Studio Code
 
 Visual Studio Code vs Notepad++. VSC is just better.
@@ -75,8 +78,6 @@ Visual Studio Code vs Notepad++. VSC is just better.
 try the keybindings. spesifically Ctrl+shift+P and alt+click
 <https://code.visualstudio.com/docs/getstarted/keybindings>
 <https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf>
-
-
 
 ### Github
 
@@ -138,8 +139,6 @@ test out predictive intellisense with shift+tab. Try it with
 - "`Get-NetIPConfiguration -`"
 - "`Test-Connection -`"
 - try out `test-connection -quiet -TargetPath "Your Favorite site"`
-
-2 Timer hit - Installasjon som hjemmelekse.
 
 ## Variables and data types
 
