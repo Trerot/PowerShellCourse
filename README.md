@@ -290,7 +290,7 @@ $data = @(
 )
 ```
 
-comma separated lines can also create an array and work mots of the time.
+comma separated lines can also create an array and work most of the time.
 
 ```powershell
 $data = 'Zero', 'One', 'Two', 'Three'
@@ -355,14 +355,14 @@ $everyExistingFolder.Remove('Value')
 $myObject = [PSCustomObject]@{
     Name     = 'Kevin'
     Language = 'PowerShell'
-    State    = 'Texas'
+    State    = 'Illinois'
 }
 
 # can be accessed like a normal object
 $myObject.Name
 
 # adding new properties to an object
-$myObject | Add-Member -MemberType NoteProperty -Name 'ID' -Value 'KevinMarquette'
+$myObject | Add-Member -MemberType NoteProperty -Name 'ID' -Value 'McCallister'
 
 # and looking at it
 $myObject.ID
@@ -372,7 +372,7 @@ $myObject.PSObject.Properties.Remove("ID")
 
 # when using objects in strings. funny thing can happen
 "hello $myobject" 
-# this above would print as hello @{ Name=Kevin; Language=PowerShell; State=Texas }
+# this above would print as hello @{ Name=Kevin; Language=PowerShell; State=Illinois }
 # $() is how you expand on something on an expression in a string 
 "hello $($myobject.name)"
 ```
