@@ -6,6 +6,7 @@ whats missing?
 - [ ] function stuff (near bottom)
 - [ ] API stuff (near bottom)
 - [ ] loop stuff(near bottom)
+- [ ] short explanation of wildcards
 
 ## Prerequisits
 
@@ -56,15 +57,7 @@ the powershell profile loads every time you open powershell so this is a nice pl
 this can happen if your system image is lacking shell components. the following solution pasted into a powershell window run as admin should solve it
 
 ```powershell
-Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate -name DisableDualScan -value 0
-Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate -name DisableWindowsUpdateAccess -value 0
-Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate -name SetPolicyDrivenUpdateSourceForDriverUpdates -value 0
-Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate -name SetPolicyDrivenUpdateSourceForFeatureUpdates -value 0
-Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate -name SetPolicyDrivenUpdateSourceForOtherUpdates -value 0
-Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate -name SetPolicyDrivenUpdateSourceForQualityUpdates -value 0
-Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU -name UseWUServer -value 0
-Restart-Service wuauserv
-DISM /Online /Add-Capability /CapabilityName:Windows.Client.ShellComponents~~~~0.0.1.0
+Get-WindowsCapability -Name "*ShellComponents*" -Online | Add-WindowsCapability -Online
 ```
 
 ## Tools
@@ -428,7 +421,7 @@ there are plenty but the logical and comparison operators are the most used ones
 - 1 -eq 1
 - 1 -ne 1
 - (0..10) -contains 8
-- "burgers are awesome" -like "*are*"
+- "burgers are awesome" -like "\*are\*"
 - "burger" -match "burger"
 - 1 -gt 2
 - 1 -lt 2
@@ -613,7 +606,80 @@ as you can see -ne(not equal) and -eq(equal) is changed.
 
 where, binarysearch,hashtable, sorting
 
-##
+## Functions
+Take a look at all the approved verbs here:
+https://learn.microsoft.com/en-us/powershell/scripting/developer/cmdlet/approved-verbs-for-windows-powershell-commands?view=powershell-7.2
+
+You're able to use automatic variables in functions like:
+- [$PSBoundParameters](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_automatic_variables?view=powershell-7.3#psboundparameters)
+- [$PSCmdlet](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_automatic_variables?view=powershell-7.3#pscmdlet)
+
+You can have 2 different types, basic- and advanced-functions.
+
+Basic functions would just have the bare minimum in order to create a function.
+```powershell
+function Verb-Noun {
+    param (
+        [string]$Param1,
+        [int]$Param2
+    )
+    #CODE
+}
+```
+
+Advanced functions are a little more complex, but have much more functionality. Therefore we most likely would always want to create an advanced function. Here's a basic version of an advanced function.
+```powershell
+function Verb-Noun {
+    [CmdletBinding()]
+    param (
+        [string]$Param1,
+        [int]$Param2
+    )
+    
+    begin {
+        #CODE
+    }
+    
+    process {
+        #CODE
+    }
+    
+    end {
+        #CODE
+    }
+}
+```
+The advantage of using an advanced function is that it has a lot of built-in functionality. You can e.g. create a function that has parameters that are exclusive from one another.
+You can see more of this in the [Get-MrfkUserInfo](https://github.com/NorskNoobing/NN.MrfkCommands/blob/main/source/Public/Get-MrfkUserInfo.ps1) function.
+
+```powershell
+function Verb-Noun {
+    [CmdletBinding(DefaultParameterSetName="username")]
+    param (
+        [Parameter(ParameterSetName="username")][string]$Username,
+        [Parameter(ParameterSetName="displayname")][string]$DisplayName,
+        [Parameter(ParameterSetName="mobilephone")][string]$MobilePhone
+    )
+
+    process {
+        switch ($PsCmdlet.ParameterSetName) {
+            "username" {
+                $filter = "SamAccountName -like `"$Username`""
+            }
+            "displayname" {
+                $filter = "DisplayName -like `"$DisplayName`""
+            }
+            "mobilephone" {
+                $filter = "MobilePhone -like `"$MobilePhone`""
+            }
+        }
+
+        Get-ADUser -Filter $filter
+    }
+}
+```
+
+You could merge a collection of functions into a module, which you can use to easily import functions across multiple users or devices, and update to new versions of the functions. This would atleast be better than having a bunch of custom functions in your `$PROFILE`. You can take [NN.MrfkCommands](https://github.com/NorskNoobing/NN.MrfkCommands) as an example (if one is needed).
 
 ## Creating a function
 
@@ -637,8 +703,49 @@ TASK
 
 Some stuff from these modules as they will daily look at AD and SCCM stuff.
 AD module (get-aduser, get-adgroup etc).
-SCCM module to find deployed computers, who has logged on, their ip etc.
-excel module
+
+You can run this function in order to get a list of all the functions in the module.
+```powershell
+Get-Command -Module "MODULENAME"
+```
+
+### ImportExcel module
+https://github.com/dfinke/ImportExcel
+```powershell
+Import-Excel -Path "PATH"
+```
+```powershell
+Export-Excel -Path "PATH"
+```
+
+### ActiveDirectory module
+The AD-module is installed by default on `wintools04`.
+
+You can run the following functions to get either users or groups from AD.
+```powershell
+Get-ADUser "USERNAME"
+```
+```powershell
+Get-ADGroup "GROUPNAME"
+```
+```powershell
+Get-ADComputer "COMPUTERNAME"
+```
+
+### ConfigurationManager module
+MECM module to find deployed computers, who has logged on, their ip etc.
+
+You can import the module by running the following on `wintools04`.
+```powershell
+Import-Module ConfigurationManager
+Set-Location ps1:
+```
+You'll have to set the psdrive to ps1 in order to make all the functions work.
+
+If you want to get the computerinfo of a specific computer you can run the following.
+```powershell
+Get-CMDevice -Name "LT-SADM-001"
+```
 
 ## API
 
@@ -654,20 +761,20 @@ Almost all APIS use JSON to structure data.
 {
     "glossary": {
         "title": "example glossary",
-  "GlossDiv": {
+        "GlossDiv": {
             "title": "S",
-   "GlossList": {
+            "GlossList": {
                 "GlossEntry": {
                     "ID": "SGML",
-     "SortAs": "SGML",
-     "GlossTerm": "Standard Generalized Markup Language",
-     "Acronym": "SGML",
-     "Abbrev": "ISO 8879:1986",
-     "GlossDef": {
-                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
-      "GlossSeeAlso": ["GML", "XML"]
+                    "SortAs": "SGML",
+                    "GlossTerm": "Standard Generalized Markup Language",
+                    "Acronym": "SGML",
+                    "Abbrev": "ISO 8879:1986",
+                    "GlossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook",
+                        "GlossSeeAlso": ["GML", "XML"]
                     },
-     "GlossSee": "markup"
+                    "GlossSee": "markup"
                 }
             }
         }
@@ -693,4 +800,4 @@ $weather.properties.timeseries[0].data.instant.details
 
 ### task future
 
-install PSkoans. solve the first one.
+Install [PSkoans](https://github.com/vexx32/PSKoans#prerequisites) by following the link. Go through installation of prereqs and the module. Solve the first Koan.
