@@ -13,7 +13,7 @@ The following tools must be installed before the course starts.
 
 - Visual Studio Code - https://code.visualstudio.com/
 - GitHub Desktop - https://desktop.github.com/ (unless you allready know git.)
-- Powershell 7 - https://github.com/PowerShell/PowerShell
+- Powershell 7 - https://github.com/PowerShell/PowerShell#get-powershell
 
 The following should be done before the course starts.
 
