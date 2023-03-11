@@ -134,7 +134,9 @@ test out predictive intellisense with shift+tab. Try it with
 
 - "`Get-NetIPConfiguration -`"
 - "`Test-Connection -`"
-- try out `test-connection -quiet -TargetPath "Your Favorite site"`
+- try out `test-connection -quiet -TargetName "Your Favorite site"`
+
+for Windows Powershell(Powershell 5) you have to use -ComputerName, Both work in Powershell 7.
 
 ## Variables and data types
 
